@@ -210,8 +210,8 @@ interview-guide/
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/Snailclimb/interview-guide.git
-cd interview-guide
+git clone git@github.com:Ran-jyqj/interviewAgent.git
+cd interviewAgent
 ```
 
 ### 2. 配置数据库
@@ -229,6 +229,9 @@ CREATE EXTENSION vector;
 ```bash
 # AI API 密钥（阿里云 DashScope）
 export AI_BAILIAN_API_KEY=your_api_key
+
+# 可选：指定模型，默认 qwen-plus
+export AI_MODEL=qwen-plus
 ```
 
 ### 4. 修改应用配置
@@ -237,7 +240,7 @@ export AI_BAILIAN_API_KEY=your_api_key
 
 ```yaml
 spring:
-  # PostgreSQL数据库配置
+  # PostgreSQL 数据库配置
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:interview_guide}
     username: ${POSTGRES_USER:postgres}
@@ -248,7 +251,7 @@ spring:
     hibernate:
       ddl-auto: create #首次启动用 create，表创建成功后，改回 update
 
-  # Redisson配置 (使用 spring.redis.redisson，参考官方文档)
+    # Redisson 配置（使用 spring.redis.redisson）
   redis:
     redisson:
       config: |
@@ -260,7 +263,7 @@ spring:
           subscriptionConnectionMinimumIdleSize: 1
           subscriptionConnectionPoolSize: 50
 
-# RustFS (S3兼容) 存储配置
+# RustFS（S3 兼容）存储配置
 app:
   # 面试配置
   interview:
@@ -285,7 +288,9 @@ app:
 
 ### 5. 启动服务
 
-**后端：**
+**方式 A：本地启动**
+
+后端：
 
 ```bash
 ./gradlew bootRun
@@ -293,7 +298,7 @@ app:
 
 后端服务启动于 `http://localhost:8080`
 
-**前端：**
+前端：
 
 ```bash
 cd frontend
@@ -302,6 +307,17 @@ pnpm dev
 ```
 
 前端服务启动于 `http://localhost:5173`
+
+**方式 B：Docker 一键启动**
+
+如果你希望快速体验完整环境，建议直接使用 Docker Compose：
+
+```bash
+cp .env.example .env
+docker-compose up -d --build
+```
+
+启动后可访问：前端 `http://localhost`，后端 `http://localhost:8080`
 
 
 ## Docker 快速部署
