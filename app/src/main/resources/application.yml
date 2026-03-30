@@ -1,6 +1,3 @@
-# AI Interview Platform Configuration
-# 智能AI面试官平台配置
-
 server:
   port: 8080
 
@@ -18,7 +15,7 @@ spring:
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:interview_guide}
     username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASSWORD:123456}
+    password: ${POSTGRES_PASSWORD:}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -33,11 +30,10 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 50MB  # 支持知识库上传（简历限制在业务层检查）
+      max-file-size: 50MB
       max-request-size: 50MB
-  
 
-  # Redisson配置 (使用 spring.redis.redisson，参考官方文档)
+  # Redisson配置
   redis:
     redisson:
       config: |
@@ -48,39 +44,34 @@ spring:
           connectionPoolSize: 64
           subscriptionConnectionMinimumIdleSize: 1
           subscriptionConnectionPoolSize: 50
-  
+
   # Spring AI - 阿里云DashScope (OpenAI兼容模式)
   ai:
     openai:
       base-url: https://dashscope.aliyuncs.com/compatible-mode
-      api-key: ${AI_BAILIAN_API_KEY}
+      api-key: ${AI_BAILIAN_API_KEY:}
       chat:
         options:
           model: ${AI_MODEL:qwen-plus}
           temperature: 0.2
-      # Embedding模型配置 - 使用text-embedding-v3
       embedding:
         options:
           model: text-embedding-v3
-    # 禁用自动重试机制，让异常立即返回
     retry:
-      max-attempts: 1  # 不重试，失败立即返回
+      max-attempts: 1
       on-client-errors: false
-    # PostgreSQL Vector Store配置
     vectorstore:
       pgvector:
         index-type: HNSW
         distance-type: COSINE_DISTANCE
-        dimensions: 1024  # text-embedding-v3实际生成的向量维度
-        initialize-schema: true # 开发环境设置为 true，方便快速启动。生产环境设置为 false，手动管理数据库 schema，避免意外变更。
-        remove-existing-vector-store-table: false  # 保留现有表和数据
+        dimensions: 1024
+        initialize-schema: true
+        remove-existing-vector-store-table: false
 
 # Application custom configuration
 app:
   ai:
-    # 结构化输出重试次数（用于 BeanOutputConverter 解析失败时的业务层重试）
     structured-max-attempts: ${APP_AI_STRUCTURED_MAX_ATTEMPTS:2}
-    # 重试时是否将上次错误原因注入提示词，帮助模型定向修复输出
     structured-include-last-error: ${APP_AI_STRUCTURED_INCLUDE_LAST_ERROR:true}
     rag:
       rewrite:
@@ -107,11 +98,11 @@ app:
   # RustFS (S3兼容) 存储配置
   storage:
     endpoint: ${APP_STORAGE_ENDPOINT:http://localhost:9000}
-    access-key: ${APP_STORAGE_ACCESS_KEY:wr45VXJZhCxc6FAWz0YR}
-    secret-key: ${APP_STORAGE_SECRET_KEY:GtKxV57WJkpw4CvASPBzTy2DYElLnRqh8dIXQa0m}
+    access-key: ${APP_STORAGE_ACCESS_KEY:}
+    secret-key: ${APP_STORAGE_SECRET_KEY:}
     bucket: ${APP_STORAGE_BUCKET:interview-guide}
     region: ${APP_STORAGE_REGION:us-east-1}
-  
+
   # CORS配置 - React前端
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:5174,http://localhost:80}
